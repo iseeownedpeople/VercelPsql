@@ -46,7 +46,6 @@ export default function Card({ user, pagetype }: Props) {
 
             {userImage}
             <p className="text-2xl text-center">{pagetype} Page!</p>
-            <p className="text-2xl text-center">Role: {user?.role}</p>
         </section>
     )
 }
