@@ -47,7 +47,8 @@ export const options: NextAuthOptions = {
     callbacks: {
         // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role 
         async session({ session, token }) {
-            return session},
+            return session}
+            ,
 
         async jwt({ token, account }) {
             // Persist the OAuth access_token to the token right after signin
