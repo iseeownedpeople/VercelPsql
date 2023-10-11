@@ -4,7 +4,6 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import { GithubProfile } from 'next-auth/providers/github'
 import { PrismaClient } from '@prisma/client'
 import { PrismaAdapter } from '@auth/prisma-adapter'
-import axios from "axios";
 
 const client = new PrismaClient()
 
