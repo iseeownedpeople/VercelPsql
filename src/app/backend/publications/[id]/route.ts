@@ -8,7 +8,7 @@ interface Params {
 export async function GET(request: Request, {params} : Params) {
     const task = await prisma.publications.findUnique({
         where: {
-            id: Number(params.id)
+            id: params.id as string
         }
     })
     return NextResponse.json(task)
@@ -19,7 +19,7 @@ export async function PUT(request: Request, {params} : Params) {
     const data = await request.json()
     const task = await prisma.publications.update({
         where: {
-            id: Number(params.id)
+            id: (params.id) as string
         }, 
         data: data
     })
