@@ -1,4 +1,4 @@
-import type { Awaitable, NextAuthOptions, Session } from 'next-auth'
+import type { Awaitable, NextAuthOptions, RequestInternal, Session, User } from 'next-auth'
 import GitHubProvider from 'next-auth/providers/github'
 import CredentialsProvider from "next-auth/providers/credentials"
 import { GithubProfile } from 'next-auth/providers/github'
@@ -40,20 +40,8 @@ export const options: NextAuthOptions = {
                     placeholder: "your-awesome-password"
                 }
             },
-            async authorize(credentials) {
-                const res = await fetch("/backend/user", {
-                    method: 'POST',
-                    body: JSON.stringify(credentials),
-                    headers: { "Content-Type": "application/json" }
-                })
-                const user = await res.json()
-
-                // If no error and we have user data, return it
-                if (res.ok && user) {
-                    return user
-                }
-                // Return null if user data could not be retrieved
-                return null
+            authorize: function (credentials: Record<'username' | 'password', string> | undefined, req: Pick<RequestInternal, 'query' | 'headers' | 'body' | 'method'>): Awaitable<User | null> {
+                throw new Error('Function not implemented.')
             }
         })
     ],
@@ -84,13 +72,5 @@ export const options: NextAuthOptions = {
             }
             return token
         } 
-    }
-}
-interface User {
-    user?: {
-        name?: string | null
-        email?: string | null
-        image?: string | null
-        role?: string | null
     }
 }
