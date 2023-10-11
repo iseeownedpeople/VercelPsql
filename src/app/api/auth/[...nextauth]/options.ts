@@ -1,6 +1,6 @@
-import type { NextAuthOptions } from 'next-auth'
+import type { Awaitable, NextAuthOptions, Session } from 'next-auth'
 import GitHubProvider from 'next-auth/providers/github'
-import CredentialsProvider from 'next-auth/providers/credentials'
+import CredentialsProvider from "next-auth/providers/credentials"
 import { GithubProfile } from 'next-auth/providers/github'
 import { PrismaClient } from '@prisma/client'
 import { PrismaAdapter } from '@auth/prisma-adapter'
@@ -27,6 +27,7 @@ export const options: NextAuthOptions = {
         }),
         CredentialsProvider({
             name: "Credentials",
+
             credentials: {
                 username: {
                     label: "Username:",
@@ -40,28 +41,56 @@ export const options: NextAuthOptions = {
                 }
             },
             async authorize(credentials) {
-                // This is where you need to retrieve user data 
-                // to verify with credentials
-                // Docs: https://next-auth.js.org/configuration/providers/credentials
-                const user = { id: "42", name: "facu", password: "123", role: "manager" }
+                const res = await fetch("/backend/user", {
+                    method: 'POST',
+                    body: JSON.stringify(credentials),
+                    headers: { "Content-Type": "application/json" }
+                })
+                const user = await res.json()
 
-                if (credentials?.username === user.name && credentials?.password === user.password) {
+                // If no error and we have user data, return it
+                if (res.ok && user) {
                     return user
-                } else {
-                    return null
                 }
+                // Return null if user data could not be retrieved
+                return null
             }
         })
     ],
     callbacks: {
-        // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role
-        
-        async jwt({ token, user }) { 
+        // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role 
+
+        // If you want to use the role in client components 
+        async signIn({ user, account, profile, email, credentials }) {
+            const isAllowedToSignIn = true
+            if (isAllowedToSignIn) {
+                return true
+            } else {
+                // Return false to display a default error message
+                return '/unauthorized'
+            }
+        },
+        async redirect({ url, baseUrl }) {
+            // Allows relative callback URLs
+            if (url.startsWith("/")) return `${baseUrl}${url}`
+            // Allows callback URLs on the same origin
+            else if (new URL(url).origin === baseUrl) return url
+            return baseUrl
+        },
+        async jwt({ token, account }) {
+            // Persist the OAuth access_token to the token right after signin
+            if (account) {
+                token.accessToken = account.access_token
+            }
             return token
-        },
-        // If you want to use the role in client components
-        async session({ session, token }) { 
-            return session
-        },
+        } 
+    }
+}
+interface User {
+    user?: {
+        name?: string | null
+        email?: string | null
+        image?: string | null
+        role?: string | null
     }
 }
