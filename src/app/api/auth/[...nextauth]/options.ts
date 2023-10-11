@@ -47,8 +47,6 @@ export const options: NextAuthOptions = {
     ],
     callbacks: {
         // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role 
-
-        // If you want to use the role in client components 
   
         async jwt({ token, account }) {
             // Persist the OAuth access_token to the token right after signin
