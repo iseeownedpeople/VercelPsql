@@ -15,16 +15,8 @@ export default withAuth(
     },
     {
         callbacks: {
-            authorized: ({ req, token }) => {
-                if (
-                    req.nextUrl.pathname.startsWith("/backend") &&
-                    token !== null
-                ) {
-                    return false
-                }
-                return true
-            }
-        }
+            authorized: ({ token }) => !!token
+        },
     }
 )
 
