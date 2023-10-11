@@ -1,6 +1,6 @@
 
 import { GetStaticProps } from 'next';  
-import { prisma } from '../lib/prisma';
+import { prisma } from './lib/prisma';
 
 function page() {
   return (
