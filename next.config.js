@@ -1,15 +1,8 @@
-/** @type {import('next').NextConfig} */
-const nextConfig = {
+/** @type {import('next').NextConfig} */ 
+module.exports = {
     images: {
-        remotePatterns: [
-            {
-                protocol: 'https',
-                hostname: 'avatars.githubusercontent.com',
-                port: '',
-                pathname: '/u/**',
-            },
-        ],
+      domains: ["avatars.githubusercontent.com"],
     },
-}
-
-module.exports = nextConfig 
+    reactStrictMode: true,
+  };
+  
