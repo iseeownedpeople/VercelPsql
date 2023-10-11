@@ -49,27 +49,9 @@ export const options: NextAuthOptions = {
         // Ref: https://authjs.dev/guides/basics/role-based-access-control#persisting-the-role 
 
         // If you want to use the role in client components 
-        async signIn({ user, account, profile, email, credentials }) {
-            const isAllowedToSignIn = true
-            if (isAllowedToSignIn) {
-                return true
-            } else {
-                // Return false to display a default error message
-                return '/unauthorized'
-            }
-        },
-        async redirect({ url, baseUrl }) {
-            // Allows relative callback URLs
-            if (url.startsWith("/")) return `${baseUrl}${url}`
-            // Allows callback URLs on the same origin
-            else if (new URL(url).origin === baseUrl) return url
-            return baseUrl
-        },
+  
         async jwt({ token, account }) {
             // Persist the OAuth access_token to the token right after signin
-            if (account) {
-                token.accessToken = account.access_token
-            }
             return token
         } 
     }
