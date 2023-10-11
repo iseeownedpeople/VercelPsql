@@ -44,6 +44,8 @@ model User {
   role          String?
   accounts      Account[]
   sessions      Session[]
+  posts         Post[]
+  @@map(name: "users")
 }
 
 model VerificationToken {
@@ -60,3 +62,13 @@ model Publications {
    description String?
    created_at DateTime
 }
+
+model Post {
+  id        String     @default(cuid()) @id
+  title     String
+  content   String?
+  published Boolean @default(false)
+  author    User?   @relation(fields: [authorId], references: [id])
+  authorId  String?
+}
+ 
