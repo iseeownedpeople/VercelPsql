@@ -1,14 +1,6 @@
 
 import { GetStaticProps } from 'next';  
-import { prisma } from './lib/prisma';
-
-function page() {
-  return (
-    <div> 
-      Public HomePage
-    </div>
-  )
-}
+import { prisma } from './lib/prisma'; 
 
 export const getStaticProps: GetStaticProps = async () => {
     const feed = await prisma.post.findMany({
@@ -24,5 +16,17 @@ export const getStaticProps: GetStaticProps = async () => {
       revalidate: 10,
     };
   };
+ 
 
-export default page
+import { SessionProvider } from 'next-auth/react';
+import { AppProps } from 'next/app';
+
+const App = ({ Component, pageProps }: AppProps) => {
+  return (
+    <SessionProvider session={pageProps.session}>
+      <Component {...pageProps} />
+    </SessionProvider>
+  );
+};
+
+export default App;
